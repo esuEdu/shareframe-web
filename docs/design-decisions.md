@@ -198,6 +198,65 @@ encoder behaviour and network conditions all intervene. A UI badge reading
 Show what the track is actually delivering, and let premium be described as
 "up to 1080p".
 
+## 11. The home page is two different pages
+
+**Decision: `/` renders a landing page for visitors and a room dashboard for
+signed-in users. Same route, different page — not a landing page with a
+logged-in banner.**
+
+A visitor needs to understand what the product is. A signed-in user needs to get
+into a room in one click. Trying to serve both from one layout produces a
+marketing hero that a daily user has to scroll past forever.
+
+**The landing page must offer the guest path as a peer to sign-in.** Public rooms
+open from a link and private rooms open with a code and password, neither of
+which needs an account — so a visitor arriving with a code must never be asked
+to sign in first. The landing page carries a join-by-code field next to the
+Google button, not behind it.
+
+This follows from decision 7, and it is the easiest decision to lose: every
+landing-page template puts a single primary CTA in the hero, and for this product
+that CTA would exclude the majority of first-time arrivals.
+
+## 12. Owned and invited rooms are separate sections
+
+**Decision: the dashboard lists "Suas salas" and "Convites" as two sections, not
+one merged list.**
+
+The available actions differ, and that is what decides it. On a room you own you
+can edit the title, rotate the code, change the password and remove people. On a
+room you were invited to you can enter, and nothing else. Merging them produces
+cards whose affordances vary row to row, which reads as a bug.
+
+Invited rooms additionally need to show **who invited you** — a room title alone
+is not enough context to decide whether to join something.
+
+Sort both by **live activity first**. A room with people in it right now is the
+only thing on this page worth acting on immediately; a room that was last used in
+March is an archive entry.
+
+## 13. Codes and passwords are masked by default
+
+**Decision: room codes and passwords render masked on the dashboard, revealed
+only by an explicit per-room action.**
+
+This is specific to this product and worth stating plainly: **ShareFrame's users
+share their screens.** The dashboard is, statistically, one of the most likely
+pages in the app to be on someone's screen while ten people watch — either
+because they are about to open a room, or because they shared the wrong window.
+
+A dashboard that prints `K7M2Q-9XBVT` and a room password in plain text hands
+every private room's credentials to anyone watching, and the owner will not
+notice. So:
+
+- Codes and passwords show as `•••••-•••••` with a reveal button per room.
+- Revealing is per-room and re-masks on navigation — never a global "show all".
+- Copy-to-clipboard works **without** revealing, which is what people actually
+  want when sharing a code.
+- The same applies to the room settings panel and to any invite dialog.
+
+Treat a plain-text secret in a list view as a defect, not a convenience.
+
 ## Consequences for the repo README
 
 The scope list needs two corrections:
