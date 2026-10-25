@@ -249,13 +249,59 @@ A dashboard that prints `K7M2Q-9XBVT` and a room password in plain text hands
 every private room's credentials to anyone watching, and the owner will not
 notice. So:
 
-- Codes and passwords show as `•••••-•••••` with a reveal button per room.
+- Join codes show as `•••••-•••••` with a reveal button per room.
 - Revealing is per-room and re-masks on navigation — never a global "show all".
 - Copy-to-clipboard works **without** revealing, which is what people actually
   want when sharing a code.
 - The same applies to the room settings panel and to any invite dialog.
 
 Treat a plain-text secret in a list view as a defect, not a convenience.
+
+### Codes and passwords are not the same kind of secret
+
+An earlier version of this decision, and the first version of the dashboard
+mockup, showed the room **password** as a masked value with a reveal button.
+That is not implementable, and the mistake is worth recording.
+
+The backend hashes room passwords with Argon2id, so **the server cannot return a
+password — ever.** There is nothing to reveal. The two fields differ:
+
+| | Join code | Room password |
+| --- | --- | --- |
+| Stored | plaintext (it is an identifier) | Argon2id hash |
+| Retrievable later | yes | **no** |
+| Dashboard shows | masked, with reveal and copy | "Senha definida", with **Trocar senha** |
+| Plaintext exists | always | only at creation and reset |
+
+So the dashboard offers *reset*, not *reveal*, for a password. And the
+create-room result is the **only** moment its plaintext is ever on screen, which
+is what makes the next decision matter.
+
+## 14. The create flow generates the password, and the result screen is the one chance to copy it
+
+**Decision: the create form ships with a strong generated password already in
+place. The result screen is a copy-first handoff, labelled as the only time the
+password is shown.**
+
+Two things follow from the backend design.
+
+**Generate, do not prompt.** An empty password field invites the owner to type
+something they already use elsewhere — and this password gets pasted into a
+group chat. Defaulting to a generated one makes the safe path the lazy path.
+Replacing it with a custom password stays available as a secondary action, not
+the primary field.
+
+**The result screen is a handoff, not a confirmation.** Because the password is
+hashed on write, this screen is the only place its plaintext will ever exist. So
+it leads with **one button that copies link and password together**, since that
+is the entire real-world task, and says plainly that the password will not be
+shown again. Individual copy buttons for link, code and password sit below it
+for the cases where they are needed separately.
+
+The password is still **masked by default even here**, with reveal available.
+Creating a room is something people do *while already screen-sharing* — "let me
+make a room for us" — and copy works without revealing, so masking costs
+nothing. That keeps decision 13 consistent with no exceptions.
 
 ## Consequences for the repo README
 

@@ -11,10 +11,10 @@ implementation.
 | [`design-decisions.md`](design-decisions.md) | Layout, theme, and the UI rules that carry cost consequences |
 | [`frontend-stack.md`](frontend-stack.md) | Styling, components, state, LiveKit SDK usage, auth, testing |
 
-**Visual mockup:** https://claude.ai/artifact/8MaVfQaQn63gRr99Hhs3xi — seven
+**Visual mockup:** https://claude.ai/artifact/8MaVfQaQn63gRr99Hhs3xi — nine
 artboards: room, watch picker, ad break, public join, private join, landing
-page, and the signed-in home. Dark-first, pt-BR. Private unless shared from the
-page's share menu.
+page, signed-in home, create room, and the post-create handoff. Dark-first,
+pt-BR. Private unless shared from the page's share menu.
 
 ## The decisions
 
@@ -25,7 +25,9 @@ page's share menu.
 | Private join | Password only, **reveals nothing** about the room until access is granted |
 | Home | Two pages on one route: landing for visitors, room dashboard when signed in |
 | Dashboard | **Suas salas** and **Convites** as separate sections; live rooms sort first |
-| Secrets | Codes and passwords **masked by default** — this app's users share their screens |
+| Secrets | Masked by default — this app's users share their screens |
+| Code vs password | Code is masked but revealable; a password is **hashed, so never retrievable** — reset, not reveal |
+| Create flow | Password **generated**, not prompted; the result screen is the one chance to copy it |
 | Theme | **Dark-first**, light supported, one token set |
 | Rail & picker | **Static poster frames only.** Never live video. |
 | Sharing | Always available to everyone. No queue or host approval. |
