@@ -132,18 +132,63 @@ an error toast.
 
 ## 7. Guest sessions are a first-class entry path
 
-**Decision: public rooms are joinable without login, and the join screen leads
-with that.**
+**Decision: rooms are joinable without login — public rooms outright, private
+rooms with a code and password. The join screen leads with that.**
 
-The backend issues ephemeral guest sessions for public rooms. Guests cannot own
-rooms, cannot access private rooms and are always on the free tier. The UI
-should not present login as a wall in front of a public room — the Google
-sign-in belongs next to the guest option, not before it.
+The backend issues ephemeral guest sessions. Guests cannot create or own rooms
+and are always on the free tier, but a correct join code and room password admit
+a guest to a private room without any sign-in. So login is never a wall in front
+of a room: the Google button sits beside the guest option, not before it.
 
-Private rooms do require sign-in, because an invite check against an anonymous
-session is meaningless.
+Sign-in is only required for creating a room, owning or moderating one, and
+entering a private room by **invite** rather than by code.
 
-## 8. Quality is shown as achieved, never as promised
+## 8. The private join screen reveals nothing
+
+**Decision: `/j/{code}` shows a password field and no information about the
+room. Not the title, not the description, not the participant count.**
+
+The backend verifies code and password **together** and returns one generic
+error for every failure, so that a wrong code cannot be distinguished from a
+wrong password. A UI that fetched the title to display a friendly "Entrar em
+'Reunião Financeiro'" heading would hand back exactly the enumeration oracle the
+backend design refuses to give.
+
+So the private join screen is deliberately plain:
+
+- One form: password only. The code arrives in the link.
+- One error message for every failure, matching the server's.
+- Title and description appear **after** access is granted, in the room chrome.
+- No "checking code…" step, no green tick on the code field.
+
+The frontend cost of this is a slightly colder first impression. That is the
+right trade: the alternative leaks which private rooms exist to anyone who wants
+to find out.
+
+For **public** rooms the opposite applies — show the title, description and
+participant count freely on the join screen, since there is nothing to protect.
+
+## 9. Room identity lives in the chrome
+
+**Decision: the title is always visible in the room header. The description is
+one click away, never permanently occupying the layout.**
+
+A title is navigational — with unlimited session length and several rooms open
+across tabs, it is how someone knows where they are. It belongs in the header
+next to the visibility badge.
+
+A description is context read once on arrival and then noise. Put it behind an
+info affordance on the title, or in a collapsible room-details panel. Do not
+give it a permanent band across the top: it would push the stage down for the
+entire session to show text nobody is reading after minute one, and the stage is
+the product.
+
+Both are user-written text rendered to other people: **render as text, never as
+HTML**, and never with `dangerouslySetInnerHTML`. Long titles truncate with
+ellipsis and carry a `title` attribute rather than wrapping the header onto a
+second line.
+
+## 10. Quality is shown as achieved, never as promised
 
 **Decision: surface the actual resolution being received, not the plan's label.**
 

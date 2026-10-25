@@ -20,6 +20,8 @@ unless shared from the page's share menu.
 | | |
 | --- | --- |
 | Layout | **Stage + rail** — one large selected screen, compact sharing rail. No tile grid. |
+| Room identity | Title always in the chrome; description one click away, never a permanent band |
+| Private join | Password only, **reveals nothing** about the room until access is granted |
 | Theme | **Dark-first**, light supported, one token set |
 | Rail & picker | **Static poster frames only.** Never live video. |
 | Sharing | Always available to everyone. No queue or host approval. |
